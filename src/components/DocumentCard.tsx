@@ -1,6 +1,6 @@
 _
 import React, { FC, useEffect, useState } from 'react';
-import { Document } from '../types';
+import { Document } from '~/types';
 import styles from './DocumentCard.module.css';
 
 interface Props {
