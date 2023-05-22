@@ -1,17 +1,18 @@
-_
-import React from 'react';
-import { AppProps } from 'next/app';
-import '../styles/globals.css';
+import { type AppType } from "next/app";
+import { type Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
 
-const CustomApp: React.FC<AppProps> = ({ Component, pageProps }) => {
-  const [data, setData] = React.useState(null);
+import "~/styles/globals.css";
 
-  React.useEffect(() => {
-    // Fetch data from API and set the state
-  }, []);
-
-  return <Component {...pageProps} />;
+const MyApp: AppType<{ session: Session | null }> = ({
+  Component,
+  pageProps: { session, ...pageProps },
+}) => {
+  return (
+    <SessionProvider session={session}>
+      <Component {...pageProps} />
+    </SessionProvider>
+  );
 };
 
-export default CustomApp;
-
+export default MyApp;
