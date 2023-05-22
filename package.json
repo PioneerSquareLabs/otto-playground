@@ -7,8 +7,7 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start",
-    "create-database": "psql -f ./scripts/create_database.sql"
+    "start": "next start"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.5",
