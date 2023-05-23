@@ -1,3 +1,4 @@
+
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
@@ -7,11 +8,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -56,6 +53,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    projects      Project[]
 }
 
 model VerificationToken {
@@ -64,4 +62,53 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Project {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  user        User         @relation(fields: [userId], references: [id])
+  userId      Int
+  teamMembers TeamMember[]
+  documents   Document[]
+  tasks       Task[]
+}
+
+model TeamMember {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId Int
+}
+
+model Document {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId Int
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  status      String
+  storyPoints Int
+  parentTask  Task?    @relation("TaskToSubtask", fields: [parentTaskId], references: [id])
+  parentTaskId Int?    @map("parent_task_id")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   Int
+  subtasks    Task[]   @relation("TaskToSubtask")
 }
