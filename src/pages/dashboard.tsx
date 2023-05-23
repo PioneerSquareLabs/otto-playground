@@ -14,13 +14,23 @@ const Dashboard: React.FC<DashboardProps> = ({ initialProjects }) => {
 
   // Fetch projects from API
   useEffect(() => {
-    // Fetch projects from API and update state
+    const fetchProjects = async () => {
+      const response = await fetch('/api/projects');
+      const data = await response.json();
+      setProjects(data);
+    };
+
+    fetchProjects();
   }, []);
 
   // Render project cards
   const renderProjects = () => {
     return projects.map((project) => (
-      <ProjectCard key={project.id} project={project} />
+      <ProjectCard
+        key={project.id}
+        project={project}
+        onClick={() => router.push(`/project/${project.id}`)}
+      />
     ));
   };
 

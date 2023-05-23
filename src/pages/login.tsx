@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { signIn } from 'next-auth/client';
 import { User } from '~/types';
 
 interface Props {
@@ -15,7 +16,18 @@ const LoginPage: React.FC<Props> = ({ onLogin }) => {
     e.preventDefault();
 
     // Call the API endpoint to authenticate the user
-    // Handle success and error cases
+    const result = await signIn('credentials', {
+      redirect: false,
+      email,
+      password,
+    });
+
+    if (result.error) {
+      setError(result.error);
+    } else {
+      onLogin(result.user);
+      router.push('/dashboard');
+    }
   };
 
   return (
