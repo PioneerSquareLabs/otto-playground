@@ -11,12 +11,10 @@ const LoginPage: React.FC<Props> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Call the API endpoint to authenticate the user
     const result = await signIn('credentials', {
       redirect: false,
       email,
@@ -27,7 +25,7 @@ const LoginPage: React.FC<Props> = ({ onLogin }) => {
       setError(result.error);
     } else {
       onLogin(result.user);
-      router.push('/dashboard');
+      useRouter().push('/dashboard');
     }
   };
 
