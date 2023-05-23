@@ -14,3 +14,4 @@ const CustomApp: React.FC<AppProps> = ({ Component, pageProps }) => {
 };
 
 export default CustomApp;
+
