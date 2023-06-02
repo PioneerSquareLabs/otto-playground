@@ -7,11 +7,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -56,6 +52,11 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    github_id     Int       @unique
+    avatar_url    String?
+    created_at    DateTime  @default(now())
+    updated_at    DateTime  @default(now())
+    projects      Project[]
 }
 
 model VerificationToken {
@@ -64,4 +65,68 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Project {
+  id              Int           @id @default(autoincrement())
+  name            String
+  description     String?
+  user_id         String
+  language        String
+  framework       String
+  database        String
+  hosting         String
+  authentication  String
+  css_styling     String
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @default(now())
+  user            User          @relation(fields: [user_id], references: [id])
+  project_files   ProjectFile[]
+  data_tables     DataTable[]
+  tasks           Task[]
+}
+
+model ProjectFile {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  project_id  Int
+  file_path   String
+  figma_url   String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now())
+  project     Project  @relation(fields: [project_id], references: [id])
+}
+
+model DataTable {
+  id         Int         @id @default(autoincrement())
+  name       String
+  project_id Int
+  created_at DateTime    @default(now())
+  updated_at DateTime    @default(now())
+  project    Project     @relation(fields: [project_id], references: [id])
+  columns    DataColumn[]
+}
+
+model DataColumn {
+  id           Int       @id @default(autoincrement())
+  name         String
+  data_type    String
+  description  String?
+  data_table_id Int
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @default(now())
+  data_table   DataTable @relation(fields: [data_table_id], references: [id])
+}
+
+model Task {
+  id             Int      @id @default(autoincrement())
+  title          String
+  description    String?
+  project_id     Int
+  github_issue_id Int?
+  status         String   @default("pending")
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
+  project        Project  @relation(fields: [project_id], references: [id])
 }
