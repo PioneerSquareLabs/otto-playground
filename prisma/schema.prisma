@@ -61,7 +61,7 @@ model Project {
   id          Int       @id @default(autoincrement())
   name        String
   description String?
-  user        User      @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
@@ -87,7 +87,7 @@ model ProjectSetting {
 
 model SlackConnection {
   id          Int       @id @default(autoincrement())
-  user        User      @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   slackUserId String
   slackTeamId String
@@ -148,3 +148,5 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+
