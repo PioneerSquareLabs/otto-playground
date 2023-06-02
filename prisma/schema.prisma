@@ -7,11 +7,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -50,12 +46,99 @@ model Session {
 
 model User {
     id            String    @id @default(cuid())
-    name          String?
+    githubId      Int       @unique
+    name          String
     email         String?   @unique
     emailVerified DateTime?
-    image         String?
+    imageUrl      String?
     accounts      Account[]
     sessions      Session[]
+    projects      Project[]
+    slackConnections SlackConnection[]
+}
+
+model Project {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+  settings    ProjectSetting[]
+  sitemaps    Sitemap[]
+  dataSchemas DataSchema[]
+  tasks       Task[]
+}
+
+model ProjectSetting {
+  id            Int       @id @default(autoincrement())
+  language      String
+  framework     String
+  database      String
+  hosting       String
+  authentication String
+  cssStyling    String
+  project       Project   @relation(fields: [projectId], references: [id])
+  projectId     Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now())
+}
+
+model SlackConnection {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  slackUserId String
+  slackTeamId String
+  accessToken String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+}
+
+model Sitemap {
+  id              Int       @id @default(autoincrement())
+  project         Project   @relation(fields: [projectId], references: [id])
+  projectId       Int
+  fileName        String
+  fileDescription String?
+  approved        Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
+}
+
+model DataSchema {
+  id        Int         @id @default(autoincrement())
+  project   Project     @relation(fields: [projectId], references: [id])
+  projectId Int
+  tableName String
+  approved  Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now())
+  columns   DataColumn[]
+}
+
+model DataColumn {
+  id              Int       @id @default(autoincrement())
+  dataSchema      DataSchema @relation(fields: [dataSchemaId], references: [id])
+  dataSchemaId    Int
+  columnName      String
+  columnType      String
+  columnDescription String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
+}
+
+model Task {
+  id            Int       @id @default(autoincrement())
+  project       Project   @relation(fields: [projectId], references: [id])
+  projectId     Int
+  title         String
+  description   String?
+  githubIssueId Int?
+  approved      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now())
 }
 
 model VerificationToken {
