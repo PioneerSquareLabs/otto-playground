@@ -1,5 +1,4 @@
-import React, { ReactNode } from 'react';
-import '~/styles/globals.css';
+import React, { ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
