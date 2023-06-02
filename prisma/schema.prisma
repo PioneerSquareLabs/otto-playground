@@ -7,11 +7,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -56,6 +52,11 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    githubId      Int       @unique
+    imageUrl      String?
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @default(now())
+    projects      Project[]
 }
 
 model VerificationToken {
@@ -64,4 +65,69 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Project {
+  id            Int          @id @default(autoincrement())
+  name          String
+  description   String?
+  language      String       @default("TypeScript")
+  framework     String       @default("Next.js")
+  library       String       @default("React")
+  database      String       @default("Supabase")
+  hosting       String       @default("Vercel")
+  authFramework String       @default("NextAuth")
+  cssFramework  String       @default("Tailwind CSS")
+  userId        String
+  user          User         @relation(fields: [userId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now())
+  sitemaps      Sitemap[]
+  dataSchemas   DataSchema[]
+  tasks         Task[]
+}
+
+model Sitemap {
+  id             Int      @id @default(autoincrement())
+  projectId      Int
+  project        Project  @relation(fields: [projectId], references: [id])
+  fileName       String
+  fileDescription String?
+  approved       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+}
+
+model DataSchema {
+  id        Int      @id @default(autoincrement())
+  projectId Int
+  project   Project  @relation(fields: [projectId], references: [id])
+  tableName String
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  columns   Column[]
+}
+
+model Column {
+  id              Int        @id @default(autoincrement())
+  dataSchemaId    Int
+  dataSchema      DataSchema @relation(fields: [dataSchemaId], references: [id])
+  columnName      String
+  columnType      String
+  columnDescription String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @default(now())
+}
+
+model Task {
+  id             Int      @id @default(autoincrement())
+  projectId      Int
+  project        Project  @relation(fields: [projectId], references: [id])
+  taskName       String
+  taskDescription String?
+  githubIssueId  Int?
+  approved       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
 }
