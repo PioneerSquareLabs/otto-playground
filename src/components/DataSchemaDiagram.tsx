@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { DataTable, DataColumn } from '~/types';
+import React, { useMemo } from "react";
+import { DataTable, DataColumn } from "~/types";
 
 interface Props {
   tables: DataTable[];
@@ -12,8 +12,9 @@ const DataSchemaDiagram: React.FC<Props> = ({ tables, columns }) => {
     columns.forEach((column) => {
       if (!groupedColumns[column.table_id]) {
         groupedColumns[column.table_id] = [];
+      } else {
+        groupedColumns[column.table_id]?.push(column);
       }
-      groupedColumns[column.table_id].push(column);
     });
     return groupedColumns;
   }, [columns]);
