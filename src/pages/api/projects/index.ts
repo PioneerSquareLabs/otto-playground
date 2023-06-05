@@ -25,7 +25,9 @@ const createProject = async (userId: string, input: Partial<Project>) => {
   return validatedProject;
 };
 
-const updateProject = async (input: Partial<Omit<Project, "createdAt" | "updatedAt">>) => {
+const updateProject = async (
+  input: Partial<Omit<Project, "createdAt" | "updatedAt">>
+) => {
   const updatedProject = await prisma.project.update({
     where: { id: input.id },
     data: {

@@ -16,51 +16,51 @@ export const ProjectSchema = z.object({
   id: z.string().default("cuid()"),
   name: z.string(),
   description: z.string().nullable(),
-  user_id: z.string(),
-  github_repo: z.string().nullable(),
-  slack_channel: z.string().nullable(),
-  created_at: z.date().default(() => new Date()),
-  updated_at: z.date().default(() => new Date()),
+  userId: z.string(),
+  githubRepo: z.string().nullable(),
+  slackChannel: z.string().nullable(),
+  createdAt: z.date().default(() => new Date()),
+  updatedAt: z.date().default(() => new Date()),
 });
 
 export type Project = z.infer<typeof ProjectSchema>;
 
 export const SitemapSchema = z.object({
   id: z.string().default("cuid()"),
-  project_id: z.string(),
-  file_name: z.string(),
-  file_description: z.string().nullable(),
-  figma_link: z.string().nullable(),
+  projectId: z.string(),
+  fileName: z.string(),
+  fileDescription: z.string().nullable(),
+  figmaLink: z.string().nullable(),
   status: z.string().default("pending"),
-  created_at: z.date().default(() => new Date()),
-  updated_at: z.date().default(() => new Date()),
+  createdAt: z.date().default(() => new Date()),
+  updatedAt: z.date().default(() => new Date()),
 });
 
 export type Sitemap = z.infer<typeof SitemapSchema>;
 
 export const DataSchemaSchema = z.object({
   id: z.string().default("cuid()"),
-  project_id: z.string(),
-  table_name: z.string(),
-  column_name: z.string(),
-  column_type: z.string(),
-  column_description: z.string().nullable(),
+  projectId: z.string(),
+  tableName: z.string(),
+  columnName: z.string(),
+  columnType: z.string(),
+  columnDescription: z.string().nullable(),
   status: z.string().default("pending"),
-  created_at: z.date().default(() => new Date()),
-  updated_at: z.date().default(() => new Date()),
+  createdAt: z.date().default(() => new Date()),
+  updatedAt: z.date().default(() => new Date()),
 });
 
 export type DataSchema = z.infer<typeof DataSchemaSchema>;
 
 export const TaskSchema = z.object({
   id: z.string().default("cuid()"),
-  project_id: z.string(),
+  projectId: z.string(),
   title: z.string(),
   description: z.string().nullable(),
   status: z.string().default("pending"),
-  github_issue_id: z.number().nullable(),
-  created_at: z.date().default(() => new Date()),
-  updated_at: z.date().default(() => new Date()),
+  githubIssueId: z.number().nullable(),
+  createdAt: z.date().default(() => new Date()),
+  updatedAt: z.date().default(() => new Date()),
 });
 
 export type Task = z.infer<typeof TaskSchema>;
