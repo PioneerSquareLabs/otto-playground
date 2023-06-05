@@ -1,6 +1,5 @@
 import React from "react";
 import Layout from "~/components/Layout";
-import "~/styles/globals.css";
 
 const HomePage: React.FC = () => {
   return (
