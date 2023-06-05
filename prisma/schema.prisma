@@ -1,3 +1,4 @@
+
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
@@ -7,11 +8,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -56,6 +53,10 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    githubId      Int       @unique
+    avatarUrl     String?
+    projects      Project[]
+    slackConnections SlackConnection[]
 }
 
 model VerificationToken {
@@ -64,4 +65,89 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Project {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?
+  userId      String
+  githubRepoUrl String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  user        User         @relation(fields: [userId], references: [id])
+  projectArchitectureOptions ProjectArchitectureOption[]
+  sitemapNodes SitemapNode[]
+  dataTables  DataTable[]
+  tasks       Task[]
+}
+
+model ProjectArchitectureOption {
+  id          Int          @id @default(autoincrement())
+  language    String
+  framework   String
+  database    String
+  hosting     String
+  authentication String
+  cssStyling  String
+  projectId   Int
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  project     Project      @relation(fields: [projectId], references: [id])
+}
+
+model SlackConnection {
+  id          Int          @id @default(autoincrement())
+  slackUserId String       @unique
+  slackTeamId String
+  userId      String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  user        User         @relation(fields: [userId], references: [id])
+}
+
+model SitemapNode {
+  id          Int          @id @default(autoincrement())
+  fileName    String
+  description String?
+  figmaLink   String?
+  projectId   Int
+  approved    Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  project     Project      @relation(fields: [projectId], references: [id])
+}
+
+model DataTable {
+  id          Int          @id @default(autoincrement())
+  tableName   String
+  projectId   Int
+  approved    Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  project     Project      @relation(fields: [projectId], references: [id])
+  dataColumns DataColumn[]
+}
+
+model DataColumn {
+  id          Int          @id @default(autoincrement())
+  columnName  String
+  description String?
+  dataType    String
+  dataTableId Int
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  dataTable   DataTable    @relation(fields: [dataTableId], references: [id])
+}
+
+model Task {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String?
+  githubIssueId Int?
+  projectId   Int
+  approved    Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  project     Project      @relation(fields: [projectId], references: [id])
 }
