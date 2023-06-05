@@ -14,6 +14,16 @@ If you are not familiar with the different technologies used in this project, pl
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
 
+## Prisma Migration Instructions
+
+To run a Prisma migration, use the following command:
+
+```
+npx prisma migrate dev --name init
+```
+
+In this command, `init` is the name of the migration. You can replace it with the desired name for your migration.
+
 ## Learn More
 
 To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
