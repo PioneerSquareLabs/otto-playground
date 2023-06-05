@@ -1,3 +1,4 @@
+
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
@@ -7,11 +8,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -49,13 +46,74 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
+    id            String    @id @default(cuid()) @map("id")
+    githubId      Int       @unique @map("github_id")
+    name          String    @map("name")
+    email         String?   @unique @map("email")
     emailVerified DateTime?
-    image         String?
+    image         String?   @map("image")
+    createdAt     DateTime  @default(now()) @map("created_at")
+    updatedAt     DateTime  @default(now()) @map("updated_at")
     accounts      Account[]
     sessions      Session[]
+    projects      Project[]
+}
+
+model Project {
+    id          String          @id @default(cuid()) @map("id")
+    name        String          @map("name")
+    description String?         @map("description")
+    userId      String          @map("user_id")
+    createdAt   DateTime        @default(now()) @map("created_at")
+    updatedAt   DateTime        @default(now()) @map("updated_at")
+    user        User            @relation(fields: [userId], references: [id])
+    sitemaps    ProjectSitemap[]
+    dataSchemas ProjectDataSchema[]
+    tasks       ProjectTask[]
+}
+
+model ProjectSitemap {
+    id             String   @id @default(cuid()) @map("id")
+    projectId      String   @map("project_id")
+    fileName       String   @map("file_name")
+    fileDescription String?  @map("file_description")
+    figmaLink      String?  @map("figma_link")
+    createdAt      DateTime @default(now()) @map("created_at")
+    updatedAt      DateTime @default(now()) @map("updated_at")
+    project        Project  @relation(fields: [projectId], references: [id])
+}
+
+model ProjectDataSchema {
+    id        String            @id @default(cuid()) @map("id")
+    projectId String            @map("project_id")
+    tableName String            @map("table_name")
+    createdAt DateTime          @default(now()) @map("created_at")
+    updatedAt DateTime          @default(now()) @map("updated_at")
+    project  Project            @relation(fields: [projectId], references: [id])
+    columns  ProjectDataColumn[]
+}
+
+model ProjectDataColumn {
+    id              String           @id @default(cuid()) @map("id")
+    dataSchemaId    String           @map("data_schema_id")
+    columnName      String           @map("column_name")
+    columnType      String           @map("column_type")
+    columnDescription String?        @map("column_description")
+    createdAt       DateTime         @default(now()) @map("created_at")
+    updatedAt       DateTime         @default(now()) @map("updated_at")
+    dataSchema      ProjectDataSchema @relation(fields: [dataSchemaId], references: [id])
+}
+
+model ProjectTask {
+    id            String   @id @default(cuid()) @map("id")
+    projectId      String   @map("project_id")
+    taskName       String   @map("task_name")
+    taskDescription String?  @map("task_description")
+    githubIssueId  Int?      @map("github_issue_id")
+    status         String    @default("pending") @map("status")
+    createdAt      DateTime  @default(now()) @map("created_at")
+    updatedAt      DateTime  @default(now()) @map("updated_at")
+    project        Project   @relation(fields: [projectId], references: [id])
 }
 
 model VerificationToken {
