@@ -7,11 +7,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -50,12 +46,14 @@ model Session {
 
 model User {
     id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
+    githubId      Int       @unique
+    name          String
+    email         String    @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    projects      Project[]
 }
 
 model VerificationToken {
@@ -64,4 +62,70 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Project {
+  id             String         @id @default(cuid())
+  userId         String
+  name           String
+  description    String?
+  language       String
+  framework      String
+  database       String
+  hosting        String
+  authFramework  String
+  cssStyling     String
+  slackAuthToken String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @default(now())
+  user           User           @relation(fields: [userId], references: [id])
+  projectFiles   ProjectFile[]
+  projectTables  ProjectTable[]
+  projectTasks   ProjectTask[]
+}
+
+model ProjectFile {
+  id              String    @id @default(cuid())
+  projectId       String
+  fileName        String
+  fileDescription String?
+  figmaLink       String?
+  approved        Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
+  project         Project   @relation(fields: [projectId], references: [id])
+}
+
+model ProjectTable {
+  id         String         @id @default(cuid())
+  projectId  String
+  tableName  String
+  approved   Boolean        @default(false)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @default(now())
+  project    Project        @relation(fields: [projectId], references: [id])
+  columns    ProjectColumn[]
+}
+
+model ProjectColumn {
+  id               String       @id @default(cuid())
+  projectTableId   String
+  columnName       String
+  columnDescription String?
+  dataType         String
+  isNullable       Boolean      @default(true)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @default(now())
+  projectTable     ProjectTable @relation(fields: [projectTableId], references: [id])
+}
+
+model ProjectTask {
+  id              String    @id @default(cuid())
+  projectId       String
+  taskDescription String
+  githubIssueId   Int?
+  approved        Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
+  project         Project   @relation(fields: [projectId], references: [id])
 }
