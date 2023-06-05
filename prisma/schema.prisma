@@ -1,3 +1,4 @@
+
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
@@ -7,11 +8,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -49,13 +46,84 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
+    id            String    @id @default(cuid()) @map("id")
+    githubId      Int       @unique @map("github_id")
+    name          String    @map("name")
+    email         String?   @unique @map("email")
     emailVerified DateTime?
-    image         String?
+    image         String?   @map("image")
+    createdAt     DateTime  @default(now()) @map("created_at")
+    updatedAt     DateTime  @default(now()) @map("updated_at")
     accounts      Account[]
     sessions      Session[]
+    projects      Project[]
+}
+
+model Project {
+    id             String        @id @default(cuid()) @map("id")
+    userId         String        @map("user_id")
+    name           String        @map("name")
+    description    String?       @map("description")
+    language       String        @default("TypeScript") @map("language")
+    framework      String        @default("Next.js") @map("framework")
+    database       String        @default("Supabase") @map("database")
+    hosting        String        @default("Vercel") @map("hosting")
+    authentication String        @default("NextAuth") @map("authentication")
+    cssStyling     String        @default("Tailwind CSS") @map("css_styling")
+    createdAt      DateTime      @default(now()) @map("created_at")
+    updatedAt      DateTime      @default(now()) @map("updated_at")
+    user           User          @relation(fields: [userId], references: [id])
+    projectFiles   ProjectFile[]
+    projectTables  ProjectTable[]
+    projectTasks   ProjectTask[]
+}
+
+model ProjectFile {
+    id          String    @id @default(cuid()) @map("id")
+    projectId   String    @map("project_id")
+    name        String    @map("name")
+    description String?   @map("description")
+    figmaLink   String?   @map("figma_link")
+    approved    Boolean   @default(false) @map("approved")
+    createdAt   DateTime  @default(now()) @map("created_at")
+    updatedAt   DateTime  @default(now()) @map("updated_at")
+    project     Project   @relation(fields: [projectId], references: [id])
+}
+
+model ProjectTable {
+    id          String        @id @default(cuid()) @map("id")
+    projectId   String        @map("project_id")
+    name        String        @map("name")
+    description String?       @map("description")
+    approved    Boolean       @default(false) @map("approved")
+    createdAt   DateTime      @default(now()) @map("created_at")
+    updatedAt   DateTime      @default(now()) @map("updated_at")
+    project     Project       @relation(fields: [projectId], references: [id])
+    columns     ProjectColumn[]
+}
+
+model ProjectColumn {
+    id             String      @id @default(cuid()) @map("id")
+    projectTableId String      @map("project_table_id")
+    name           String      @map("name")
+    dataType       String      @map("data_type")
+    description    String?     @map("description")
+    approved       Boolean     @default(false) @map("approved")
+    createdAt      DateTime    @default(now()) @map("created_at")
+    updatedAt      DateTime    @default(now()) @map("updated_at")
+    projectTable   ProjectTable @relation(fields: [projectTableId], references: [id])
+}
+
+model ProjectTask {
+    id             String    @id @default(cuid()) @map("id")
+    projectId      String    @map("project_id")
+    title          String    @map("title")
+    description    String?   @map("description")
+    githubIssueId  Int?      @map("github_issue_id")
+    approved       Boolean   @default(false) @map("approved")
+    createdAt      DateTime  @default(now()) @map("created_at")
+    updatedAt      DateTime  @default(now()) @map("updated_at")
+    project        Project   @relation(fields: [projectId], references: [id])
 }
 
 model VerificationToken {
