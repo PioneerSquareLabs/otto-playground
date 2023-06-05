@@ -7,11 +7,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -50,12 +46,68 @@ model Session {
 
 model User {
     id            String    @id @default(cuid())
-    name          String?
+    githubId      Int       @unique
+    name          String
     email         String?   @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @default(now())
+    projects      Project[]
+}
+
+model Project {
+    id          String    @id @default(cuid())
+    name        String
+    description String?
+    userId      String
+    githubRepo  String?
+    slackChannel String?
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @default(now())
+    user        User      @relation(fields: [userId], references: [id])
+    sitemaps    Sitemap[]
+    dataSchemas DataSchema[]
+    tasks       Task[]
+}
+
+model Sitemap {
+    id             String   @id @default(cuid())
+    projectId      String
+    fileName       String
+    fileDescription String?
+    figmaLink      String?
+    status         String   @default("pending")
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @default(now())
+    project        Project  @relation(fields: [projectId], references: [id])
+}
+
+model DataSchema {
+    id              String   @id @default(cuid())
+    projectId       String
+    tableName       String
+    columnName      String
+    columnType      String
+    columnDescription String?
+    status          String   @default("pending")
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @default(now())
+    project         Project  @relation(fields: [projectId], references: [id])
+}
+
+model Task {
+    id            String   @id @default(cuid())
+    projectId     String
+    title         String
+    description   String?
+    status        String   @default("pending")
+    githubIssueId Int?
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @default(now())
+    project       Project  @relation(fields: [projectId], references: [id])
 }
 
 model VerificationToken {
