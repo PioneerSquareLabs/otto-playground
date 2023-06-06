@@ -7,61 +7,133 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
 model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id        String   @id @default(cuid()) @map("id")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 }
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? // @db.Text
-    session_state     String?
+    id                String  @id @default(cuid()) @map("id")
+    userId            String  @map("user_id")
+    type              String  @map("type")
+    provider          String  @map("provider")
+    providerAccountId String  @map("provider_account_id")
+    refresh_token     String? @map("refresh_token") // @db.Text
+    access_token      String? @map("access_token") // @db.Text
+    expires_at        Int?    @map("expires_at")
+    token_type        String? @map("token_type")
+    scope             String? @map("scope")
+    id_token          String? @map("id_token") // @db.Text
+    session_state     String? @map("session_state")
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
 }
 
 model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
+    id           String   @id @default(cuid()) @map("id")
+    sessionToken String   @unique @map("session_token")
+    userId       String   @map("user_id")
+    expires      DateTime @map("expires")
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
+    id            String    @id @default(cuid()) @map("id")
+    name          String?   @map("name")
+    email         String?   @unique @map("email")
+    emailVerified DateTime? @map("email_verified")
+    image         String?   @map("image")
     accounts      Account[]
     sessions      Session[]
+    githubId      BigInt    @unique @map("github_id")
+    projects      Project[]
+}
+
+model Project {
+    id          String            @id @default(cuid()) @map("id")
+    name        String            @map("name")
+    description String?           @map("description")
+    userId      String            @map("user_id")
+    createdAt   DateTime          @default(now()) @map("created_at")
+    updatedAt   DateTime          @default(now()) @map("updated_at")
+    user        User              @relation(fields: [userId], references: [id])
+    settings    ProjectSetting[]
+    sitemap     SitemapEntry[]
+    dataTables  DataTable[]
+    tasks       Task[]
+}
+
+model ProjectSetting {
+  id            String   @id @default(cuid()) @map("id")
+  language      String   @map("language")
+  framework     String   @map("framework")
+  cssStyling    String   @map("css_styling")
+  database      String   @map("database")
+  hosting       String   @map("hosting")
+  authentication String   @map("authentication")
+  projectId     String   @map("project_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @default(now()) @map("updated_at")
+  project       Project  @relation(fields: [projectId], references: [id])
+}
+
+model SitemapEntry {
+  id             String   @id @default(cuid()) @map("id")
+  fileName       String   @map("file_name")
+  fileDescription String?  @map("file_description")
+  figmaLink      String?  @map("figma_link")
+  approved       Boolean  @default(false) @map("approved")
+  projectId      String   @map("project_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @map("updated_at")
+  project        Project  @relation(fields: [projectId], references: [id])
+}
+
+model DataTable {
+  id        String      @id @default(cuid()) @map("id")
+  tableName String      @map("table_name")
+  approved  Boolean     @default(false) @map("approved")
+  projectId String      @map("project_id")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @default(now()) @map("updated_at")
+  project   Project     @relation(fields: [projectId], references: [id])
+  columns   DataColumn[]
+}
+
+model DataColumn {
+  id          String    @id @default(cuid()) @map("id")
+  columnName  String    @map("column_name")
+  dataType    String    @map("data_type")
+  description String?   @map("description")
+  dataTableId String    @map("data_table_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @map("updated_at")
+  dataTable   DataTable @relation(fields: [dataTableId], references: [id])
+}
+
+model Task {
+  id             String   @id @default(cuid()) @map("id")
+  title          String   @map("title")
+  description    String?  @map("description")
+  githubIssueId  BigInt?  @map("github_issue_id")
+  approved       Boolean  @default(false) @map("approved")
+  projectId      String   @map("project_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @map("updated_at")
+  project        Project  @relation(fields: [projectId], references: [id])
 }
 
 model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+    identifier String   @map("identifier")
+    token      String   @unique @map("token")
+    expires    DateTime @map("expires")
 
     @@unique([identifier, token])
 }
