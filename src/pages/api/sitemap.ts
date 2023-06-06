@@ -13,29 +13,6 @@ const getSitemaps = async (user: User) => {
   return validatedSitemaps;
 };
 
-// model ProjectSitemap {
-//   id             String    @id @default(cuid()) @map("id")
-//   projectId      String    @map("project_id")
-//   fileName       String    @map("file_name")
-//   fileDescription String?    @map("file_description")
-//   figmaUrl       String?   @map("figma_url")
-//   approved       Boolean   @default(false) @map("approved")
-//   createdAt      DateTime  @default(now()) @map("created_at")
-//   updatedAt      DateTime  @default(now()) @map("updated_at")
-//   project        Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-// }
-
-// export const projectSitemapSchema = z.object({
-//   id: z.string().default("cuid()"),
-//   projectId: z.string(),
-//   fileName: z.string(),
-//   fileDescription: z.string().nullable().optional(),
-//   figmaUrl: z.string().nullable().optional(),
-//   approved: z.boolean().default(false),
-//   createdAt: z.date().default(() => new Date()),
-//   updatedAt: z.date().default(() => new Date()),
-// });
-
 const createSitemap = async (user: User, input: Partial<ProjectSitemap>) => {
   let newSitemap = projectSitemapSchema
     .omit({
