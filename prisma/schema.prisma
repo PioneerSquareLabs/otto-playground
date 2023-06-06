@@ -87,7 +87,7 @@ model ProjectSitemap {
   id             String    @id @default(cuid()) @map("id")
   projectId      String    @map("project_id")
   fileName       String    @map("file_name")
-  fileDescription String    @map("file_description")
+  fileDescription String?    @map("file_description")
   figmaUrl       String?   @map("figma_url")
   approved       Boolean   @default(false) @map("approved")
   createdAt      DateTime  @default(now()) @map("created_at")
