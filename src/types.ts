@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const userSchema = z.object({
   id: z.string().default("cuid()"),
-  githubId: z.number(),
+  githubId: z.number().optional(),
   name: z.string(),
   email: z.string(),
   imageUrl: z.string().nullable(),
