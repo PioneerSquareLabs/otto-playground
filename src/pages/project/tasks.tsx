@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { ProjectTask } from "~/types";
 import TaskItem from "~/components/TaskItem";
-import axios from "axios";
 
 interface Props {
   projectId: string;
@@ -16,8 +15,9 @@ const Tasks: React.FC<Props> = ({ projectId }) => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get(`/api/projects/${projectId}/tasks`);
-        setTasks(response.data);
+        const response = await fetch(`/api/projects/${projectId}/tasks`);
+        const data = await response.json();
+        setTasks(data);
       } catch (err) {
         setError("Failed to fetch tasks. Please try again.");
       }
@@ -30,7 +30,13 @@ const Tasks: React.FC<Props> = ({ projectId }) => {
 
   const handleTaskUpdate = async (updatedTask: ProjectTask) => {
     try {
-      await axios.put(`/api/tasks/${updatedTask.id}`, updatedTask);
+      await fetch(`/api/tasks/${updatedTask.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedTask),
+      });
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.id === updatedTask.id ? updatedTask : task
