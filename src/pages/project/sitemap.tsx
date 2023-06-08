@@ -8,23 +8,23 @@ interface Props {
 }
 
 const Sitemap: React.FC<Props> = ({ projectSitemaps }) => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
-  const [sitemaps, setSitemaps] = useState<ProjectSitemap[]>(projectSitemaps);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [sitemaps, setSitemaps] = useState<ProjectSitemap[]>(projectSitemaps || []);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
 
   useEffect(() => {
-    if (status === 'authenticated' && !session) {
+    if (!session) {
       router.push('/login');
-    } else if (status === 'authenticated' && session) {
+    } else {
       fetchSitemaps();
     }
-  }, [status, session]);
+  }, [session]);
 
   const fetchSitemaps = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await fetch('/api/sitemaps');
       const data = await response.json();
       setSitemaps(data);
@@ -33,6 +33,18 @@ const Sitemap: React.FC<Props> = ({ projectSitemaps }) => {
       setError(err);
       setLoading(false);
     }
+  };
+
+  const handleApprove = (id: string) => {
+    // API call to update the approved status
+  };
+
+  const handleReject = (id: string) => {
+    // API call to update the approved status
+  };
+
+  const handleCreateNewFile = () => {
+    // Open modal or separate component for creating a new file
   };
 
   if (loading) {
@@ -48,34 +60,29 @@ const Sitemap: React.FC<Props> = ({ projectSitemaps }) => {
       <h1 className="text-2xl font-semibold mb-4">Project Sitemap</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {sitemaps.map((sitemap) => (
-          <div
-            key={sitemap.id}
-            className="bg-white p-4 rounded shadow-md"
-          >
+          <div key={sitemap.id} className="border p-4 rounded shadow">
             <h2 className="text-xl font-semibold mb-2">{sitemap.fileName}</h2>
             <p className="text-gray-600 mb-4">{sitemap.fileDescription}</p>
-            <div className="flex justify-between">
-              <button
-                className="bg-green-500 text-white px-4 py-2 rounded"
-                onClick={() => {}}
-              >
-                Approve
-              </button>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded"
-                onClick={() => {}}
-              >
-                Reject
-              </button>
-            </div>
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+              onClick={() => handleApprove(sitemap.id)}
+            >
+              Approve
+            </button>
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded"
+              onClick={() => handleReject(sitemap.id)}
+            >
+              Reject
+            </button>
           </div>
         ))}
       </div>
       <button
         className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
-        onClick={() => {}}
+        onClick={handleCreateNewFile}
       >
-        Add New File
+        Create New File
       </button>
     </div>
   );
