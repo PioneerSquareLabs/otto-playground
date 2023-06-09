@@ -9,7 +9,7 @@ interface Props {
 
 const IndexPage: React.FC<Props> = ({ projects }) => {
   const { data: session } = useSession();
-  const [fetchedProjects, setFetchedProjects] = useState<Project[]>(projects);
+  const [fetchedProjects, setFetchedProjects] = useState<Project[]>(projects || []);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -26,7 +26,7 @@ const IndexPage: React.FC<Props> = ({ projects }) => {
       <h1 className="text-4xl font-bold mb-4">Welcome to Otto</h1>
       <h2 className="text-2xl font-semibold mb-4">Your Projects</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {fetchedProjects && fetchedProjects.map((project) => (
+        {fetchedProjects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}
       </div>
