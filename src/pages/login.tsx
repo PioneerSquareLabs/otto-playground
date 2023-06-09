@@ -36,7 +36,7 @@ const LoginPage: React.FC = () => {
           onClick={handleSubmit}
           className="bg-blue-500 w-full mt-8 py-2 rounded-2xl text-lg font-semibold text-white"
         >
-          Login with GitHub
+          Login
         </button>
         <p className="text-lg mt-8 text-center">Don’t have account? <a href="#" className="text-blue-500">Create new account</a></p>
       </div>
