@@ -18,15 +18,15 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-3xl font-bold mb-6">Sign in to your account</h1>
-        <p className="text-gray-600 mb-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
+        <h1 className="mb-6 text-3xl font-bold">Sign in to your account</h1>
+        <p className="mb-4 text-gray-600">
           Sign in with your GitHub account to access the application.
         </p>
         <button
           onClick={handleSubmit}
-          className="bg-blue-500 text-white font-bold py-2 px-4 rounded w-full"
+          className="w-full rounded bg-blue-500 px-4 py-2 font-bold text-white"
         >
           Sign in with GitHub
         </button>
