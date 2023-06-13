@@ -13,23 +13,44 @@ const LoginPage: React.FC = () => {
     }
   }, [session, router]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     signIn("github");
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-        <h1 className="mb-6 text-3xl font-bold">Sign in to your account</h1>
-        <p className="mb-4 text-gray-600">
-          Sign in with your GitHub account to access the application.
-        </p>
-        <button
-          onClick={handleSubmit}
-          className="w-full rounded bg-blue-500 px-4 py-2 font-bold text-white"
-        >
-          Sign in with GitHub
-        </button>
+    <div className="w-full h-screen bg-green-900 flex">
+      <div className="w-1/2 h-full bg-white p-10">
+        <div className="text-center">
+          <h1 className="text-4xl font-medium text-black uppercase">Welcome back</h1>
+          <p className="text-base text-gray-600">Welcome back! Please enter your details.</p>
+        </div>
+        <form className="flex flex-col space-y-8 mt-10" onSubmit={handleSubmit}>
+          <div className="flex flex-col space-y-2">
+            <label htmlFor="email" className="text-base font-medium text-black">Email</label>
+            <input type="email" id="email" placeholder="Enter your email" className="text-base font-light text-gray-600 border border-gray-300 rounded-lg shadow-md p-2" />
+          </div>
+          <div className="flex flex-col space-y-2">
+            <label htmlFor="password" className="text-base font-medium text-black">Password</label>
+            <input type="password" id="password" placeholder="**********" className="text-base font-light text-gray-600 border border-gray-300 rounded-lg shadow-md p-2" />
+          </div>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              <input type="checkbox" id="remember" className="border border-gray-300 rounded-sm" />
+              <label htmlFor="remember" className="text-base font-medium text-black ml-2">Remember me</label>
+            </div>
+            <a href="#" className="text-base font-medium text-black">Forgot password</a>
+          </div>
+          <button type="submit" className="text-base font-medium text-white bg-red-600 rounded-lg shadow-md p-2">Sign in</button>
+          <button onClick={() => signIn("google")} className="text-base font-medium text-black border border-gray-300 rounded-lg shadow-md p-2 flex items-center justify-center">
+            {/* Add Google SVG icon here */}
+            <span className="ml-2">Sign in with Google</span>
+          </button>
+        </form>
+        <p className="text-sm font-medium text-center mt-8">Don’t have an account? Sign up for free!</p>
+      </div>
+      <div className="w-1/2 h-full bg-gray-300">
+        <img src="/images/f61fbb17b5c6bfbdbb6a1422915d840278950b12.jpg" className="object-cover w-full h-full" alt="Background" />
       </div>
     </div>
   );
