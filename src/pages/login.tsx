@@ -2,6 +2,8 @@ import React from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 
 const LoginPage: React.FC = () => {
   const { data: session } = useSession();
@@ -15,7 +17,19 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    signIn("github");
+    // TODO: Implement sign in with email and password
+  };
+
+  const handleGoogleSignIn = () => {
+    signIn("google");
+  };
+
+  const handleForgotPassword = () => {
+    // TODO: Implement forgot password functionality
+  };
+
+  const handleSignUp = () => {
+    // TODO: Redirect to sign up page
   };
 
   return (
@@ -39,15 +53,15 @@ const LoginPage: React.FC = () => {
               <input type="checkbox" id="remember" className="border border-gray-300 rounded-sm" />
               <label htmlFor="remember" className="text-base font-medium text-black ml-2">Remember me</label>
             </div>
-            <a href="#" className="text-base font-medium text-black">Forgot password</a>
+            <a href="#" onClick={handleForgotPassword} className="text-base font-medium text-black">Forgot password</a>
           </div>
           <button type="submit" className="text-base font-medium text-white bg-red-600 rounded-lg shadow-md p-2">Sign in</button>
-          <button onClick={() => signIn("google")} className="text-base font-medium text-black border border-gray-300 rounded-lg shadow-md p-2 flex items-center justify-center">
-            {/* Add Google SVG icon here */}
+          <button onClick={handleGoogleSignIn} className="text-base font-medium text-black border border-gray-300 rounded-lg shadow-md p-2 flex items-center justify-center">
+            <FontAwesomeIcon icon={faGoogle} />
             <span className="ml-2">Sign in with Google</span>
           </button>
         </form>
-        <p className="text-sm font-medium text-center mt-8">Don’t have an account? Sign up for free!</p>
+        <p className="text-sm font-medium text-center mt-8" onClick={handleSignUp}>Don’t have an account? Sign up for free!</p>
       </div>
       <div className="w-1/2 h-full bg-gray-300">
         <img src="/images/f61fbb17b5c6bfbdbb6a1422915d840278950b12.jpg" className="object-cover w-full h-full" alt="Background" />
