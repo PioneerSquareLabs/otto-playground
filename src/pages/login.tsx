@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 
 const LoginPage: React.FC = () => {
   const { data: session } = useSession();
   const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   React.useEffect(() => {
     if (session) {
@@ -15,8 +19,28 @@ const LoginPage: React.FC = () => {
     }
   }, [session, router]);
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handleRememberMeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRememberMe(e.target.checked);
+  };
+
+  const handleForgotPassword = () => {
+    // Implement forgot password functionality here
+  };
+
   const handleSubmit = () => {
-    signIn("github");
+    // Implement sign in functionality here
+  };
+
+  const handleGoogleSignIn = () => {
+    signIn("google");
   };
 
   return (
@@ -26,18 +50,18 @@ const LoginPage: React.FC = () => {
         <div className="text-center text-gray-500">Welcome back! Please enter your details.</div>
         <div className="mt-10">
           <label className="block text-black font-medium">Email</label>
-          <input className="w-full h-10 mt-2 p-2 border border-gray-300 rounded-md shadow-md" placeholder="Enter your email" />
+          <input className="w-full h-10 mt-2 p-2 border border-gray-300 rounded-md shadow-md" placeholder="Enter your email" value={email} onChange={handleEmailChange} />
         </div>
         <div className="mt-10">
           <label className="block text-black font-medium">Password</label>
-          <input type="password" className="w-full h-10 mt-2 p-2 border border-gray-300 rounded-md shadow-md" placeholder="**********" />
+          <input type="password" className="w-full h-10 mt-2 p-2 border border-gray-300 rounded-md shadow-md" placeholder="**********" value={password} onChange={handlePasswordChange} />
         </div>
         <div className="flex justify-between items-center mt-4">
           <div className="flex items-center">
-            <input type="checkbox" className="mr-2" />
+            <input type="checkbox" className="mr-2" checked={rememberMe} onChange={handleRememberMeChange} />
             <label className="text-black font-medium">Remember me</label>
           </div>
-          <a href="#" className="text-black font-medium">Forgot password</a>
+          <a href="#" className="text-black font-medium" onClick={handleForgotPassword}>Forgot password</a>
         </div>
         <button
           onClick={handleSubmit}
@@ -46,10 +70,10 @@ const LoginPage: React.FC = () => {
           Sign in
         </button>
         <button
-          onClick={handleSubmit}
+          onClick={handleGoogleSignIn}
           className="w-full h-10 mt-4 border border-gray-300 rounded-md shadow-md flex items-center justify-center"
         >
-          <FontAwesomeIcon icon={faEnvelope} />
+          <FontAwesomeIcon icon={faGoogle} />
           <span className="ml-2 text-black font-medium">Sign in with Google</span>
         </button>
         <div className="mt-4 text-center text-sm font-medium">Don’t have an account? Sign up for free!</div>
