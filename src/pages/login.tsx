@@ -15,8 +15,36 @@ const LoginPage: React.FC = () => {
     }
   }, [session, router]);
 
+<<<<<<< Updated upstream
   const handleSubmit = () => {
     signIn("github");
+=======
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handleRememberMeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRememberMe(e.target.checked);
+    // Save rememberMe state to localStorage or cookie
+  };
+
+  const handleForgotPassword = () => {
+    // Redirect to forgot password page or open a modal
+    router.push("/forgot-password");
+  };
+
+  const handleSubmit = () => {
+    // Implement sign in functionality here
+    signIn("credentials", { email, password, callbackUrl: "/dashboard" });
+  };
+
+  const handleGoogleSignIn = () => {
+    signIn("google");
+>>>>>>> Stashed changes
   };
 
   return (
