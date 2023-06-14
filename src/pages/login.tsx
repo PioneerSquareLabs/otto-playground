@@ -2,6 +2,8 @@ import React from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
 
 const LoginPage: React.FC = () => {
   const { data: session } = useSession();
@@ -18,18 +20,42 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-        <h1 className="mb-6 text-3xl font-bold">Sign in to your account</h1>
-        <p className="mb-4 text-gray-600">
-          Sign in with your GitHub account to access the application.
-        </p>
+    <div className="w-full h-screen bg-green-900 flex">
+      <div className="w-1/2 h-full bg-white p-4">
+        <div className="text-center text-4xl font-medium text-black uppercase">Welcome back</div>
+        <div className="text-center text-gray-500">Welcome back! Please enter your details.</div>
+        <div className="mt-10">
+          <label className="block text-black font-medium">Email</label>
+          <input className="w-full h-10 mt-2 p-2 border border-gray-300 rounded-md shadow-md" placeholder="Enter your email" />
+        </div>
+        <div className="mt-10">
+          <label className="block text-black font-medium">Password</label>
+          <input type="password" className="w-full h-10 mt-2 p-2 border border-gray-300 rounded-md shadow-md" placeholder="**********" />
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <div className="flex items-center">
+            <input type="checkbox" className="mr-2" />
+            <label className="text-black font-medium">Remember me</label>
+          </div>
+          <a href="#" className="text-black font-medium">Forgot password</a>
+        </div>
         <button
           onClick={handleSubmit}
-          className="w-full rounded bg-blue-500 px-4 py-2 font-bold text-white"
+          className="w-full h-10 mt-4 bg-red-500 rounded-md shadow-md text-white font-medium"
         >
-          Sign in with GitHub
+          Sign in
         </button>
+        <button
+          onClick={handleSubmit}
+          className="w-full h-10 mt-4 border border-gray-300 rounded-md shadow-md flex items-center justify-center"
+        >
+          <FontAwesomeIcon icon={faEnvelope} />
+          <span className="ml-2 text-black font-medium">Sign in with Google</span>
+        </button>
+        <div className="mt-4 text-center text-sm font-medium">Don’t have an account? Sign up for free!</div>
+      </div>
+      <div className="w-1/2 h-full bg-gray-300">
+        <img src="/images/f61fbb17b5c6bfbdbb6a1422915d840278950b12.jpg" className="w-full h-full object-cover" />
       </div>
     </div>
   );
