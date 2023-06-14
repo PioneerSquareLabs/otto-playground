@@ -42,10 +42,12 @@ const LoginPage: React.FC = () => {
 
   const handleForgotPassword = () => {
     // Implement forgot password functionality here
+    router.push("/forgot-password");
   };
 
   const handleSignUp = () => {
     // Implement sign up functionality here
+    router.push("/signup");
   };
 
   return (
@@ -78,7 +80,7 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
       <div className="w-1/2 h-full bg-gray-300">
-        <img src="/images/914c4597836d1286ced052976e5c288c93299b83.jpg" alt="User login illustration" className="w-full h-full object-cover" />
+        <img src="/images/914c4597836d1286ced052976e5c288c93299b83.jpg" alt="Illustration of a user logging in" className="w-full h-full object-cover" />
       </div>
     </div>
   );
