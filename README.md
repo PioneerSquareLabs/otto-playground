@@ -12,7 +12,9 @@ The main reason we are sharing this repo is to give a sense of the level of soph
 
 # Demo Video
 
-[Overview of Otto](https://www.youtube.com/watch?v=ERqldloLqjU)
+[Overview of Otto](https://youtu.be/ERqldloLqjU)
+
+[Otto Figma-to-Code Demo](https://youtu.be/s9JRBw7kR9g)
 
 # One-Pager Description
 
@@ -44,9 +46,7 @@ The application pages to be created are:
 7. A project data page that shows a data schema diagram for the application. This will show each table in the database, along with each column in the table and information about the column. Users can create their own tables here by clicking on a button and adding each column name with a descriptions of what it is. They can also edit existing tables and approve or reject each table.
 8. A project tasks page that shows a list of tasks. Each task contains detailed information about each file that needs to be created. These can be edited and approved (or rejected). Once the task is approved, the task will be converted into a new live GitHub issue (created server-side with the GitHub OctoKit sdk).
 
-
-
-### START OTTO CREATED CODE ###
+### START OTTO CREATED CODE
 
 # Create T3 App
 
