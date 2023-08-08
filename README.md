@@ -12,7 +12,9 @@ The main reason we are sharing this repo is to give a sense of the level of soph
 
 # Demo Video
 
-[Overview of Otto](https://www.youtube.com/watch?v=ERqldloLqjU)
+[Overview of Otto](https://youtu.be/ERqldloLqjU/)
+
+[Otto Figma-to-Code Demo](https://youtu.be/s9JRBw7kR9g/)
 
 # One-Pager Description
 
@@ -44,8 +46,6 @@ The application pages to be created are:
 7. A project data page that shows a data schema diagram for the application. This will show each table in the database, along with each column in the table and information about the column. Users can create their own tables here by clicking on a button and adding each column name with a descriptions of what it is. They can also edit existing tables and approve or reject each table.
 8. A project tasks page that shows a list of tasks. Each task contains detailed information about each file that needs to be created. These can be edited and approved (or rejected). Once the task is approved, the task will be converted into a new live GitHub issue (created server-side with the GitHub OctoKit sdk).
 
-
-
 ### START OTTO CREATED CODE ###
 
 # Create T3 App
@@ -59,30 +59,5 @@ We try to keep this project as simple as possible, so you can start with just th
 If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
 
 - [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
+- [NextAuth.js](https://next-auth.js.org/)
 - [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
-
-## Running Prisma Migration
-
-To run the Prisma migration, use the following command:
-
-```
-npx prisma migrate dev --name init
-```
-
-Replace `init` with the name of your migration.
-
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
