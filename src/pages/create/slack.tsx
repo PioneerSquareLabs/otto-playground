@@ -20,11 +20,15 @@ export default function SlackIntegration({ project }: Props) {
   }, [session]);
 
   const handleSlackAuth = () => {
-    // handle Slack authentication
+    // TODO: Implement Slack authentication logic here
+    // This is a placeholder and needs to be replaced with actual implementation
+    console.log('Slack authentication initiated');
   };
 
   const handleSaveSettings = async () => {
-    // save the updated Slack integration settings
+    // TODO: Implement save settings logic here
+    // This is a placeholder and needs to be replaced with actual implementation
+    console.log('Saving settings initiated');
   };
 
   return (
