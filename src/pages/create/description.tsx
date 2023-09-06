@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import Layout from '~/components/Layout';
@@ -6,51 +6,56 @@ import Layout from '~/components/Layout';
 interface Props {}
 
 const Description: React.FC<Props> = () => {
-  const { status } = useSession();
   const router = useRouter();
+  const { data: session } = useSession();
   const [description, setDescription] = useState('');
+  const [error, setError] = useState('');
 
-  if (status === 'unauthenticated') {
-    router.push('/login');
-  }
+  useEffect(() => {
+    if (!session) {
+      router.push('/login');
+    }
+  }, [session]);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
     try {
-      // Call the API endpoint to save the project description to the database
-      // If the API call is successful, navigate to the next step in the project creation flow
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save project description');
+      }
+
       router.push('/create/setup');
     } catch (error) {
-      // Handle any errors that may occur during the API call and display an appropriate error message to the user
-      console.error('Error saving project description:', error);
+      setError((error as any).message);
     }
   };
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-4">Project Description</h1>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            rows={3}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="mt-4 bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Next
-          </button>
-        </form>
-      </div>
+      <h1 className="text-2xl font-bold mb-4">Project Description</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+          Description
+        </label>
+        <textarea
+          id="description"
+          name="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+        />
+        <button type="submit" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Next
+        </button>
+        {error && <p className="text-red-500 mt-2">{error}</p>}
+      </form>
     </Layout>
   );
 };
