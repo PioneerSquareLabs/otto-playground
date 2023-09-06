@@ -23,12 +23,30 @@ export default function SlackIntegration({ project }: Props) {
     // TODO: Implement Slack authentication logic here
     // This is a placeholder and needs to be replaced with actual implementation
     console.log('Slack authentication initiated');
+    // Redirect to Slack OAuth endpoint
+    window.location.href = `https://slack.com/oauth/v2/authorize?client_id=${process.env.SLACK_CLIENT_ID}&scope=incoming-webhook&redirect_uri=${process.env.SLACK_REDIRECT_URI}`;
   };
 
   const handleSaveSettings = async () => {
     // TODO: Implement save settings logic here
     // This is a placeholder and needs to be replaced with actual implementation
     console.log('Saving settings initiated');
+    // Save the Slack Channel ID to the project
+    const response = await fetch(`/api/projects/${project.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        slackChannelId,
+      }),
+    });
+
+    if (response.ok) {
+      alert('Settings saved successfully');
+    } else {
+      alert('Failed to save settings');
+    }
   };
 
   return (
