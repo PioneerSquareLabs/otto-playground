@@ -8,7 +8,7 @@ interface Props {}
 const Description: React.FC<Props> = () => {
   const router = useRouter();
   const { data: session } = useSession();
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState<string | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -19,6 +19,12 @@ const Description: React.FC<Props> = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setError(''); // Clear the error state before a new submission
+
+    if (!description) {
+      setError('Description is required');
+      return;
+    }
 
     try {
       const response = await fetch('/api/projects', {
@@ -28,7 +34,13 @@ const Description: React.FC<Props> = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save project description');
+        if (response.status >= 500) {
+          throw new Error('Server error, please try again later');
+        } else if (response.status >= 400) {
+          throw new Error('Validation error, please check your input');
+        } else {
+          throw new Error('Network error, please check your connection');
+        }
       }
 
       router.push('/create/setup');
@@ -47,7 +59,7 @@ const Description: React.FC<Props> = () => {
         <textarea
           id="description"
           name="description"
-          value={description}
+          value={description || ''}
           onChange={(e) => setDescription(e.target.value)}
           className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
         />
