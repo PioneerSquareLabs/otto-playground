@@ -1,51 +1,86 @@
-import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { Project } from '~/types';
+import Layout from '~/components/Layout';
 
 interface Props {
   project: Project;
 }
 
-const SlackIntegration: React.FC<Props> = ({ project }) => {
+export default function SlackIntegration({ project }: Props) {
   const { data: session } = useSession();
-  const [slackChannelId, setSlackChannelId] = useState<string | undefined>(undefined);
+  const router = useRouter();
+  const [slackChannelId, setSlackChannelId] = useState<string | null>(project?.slackChannelId || '');
 
   useEffect(() => {
-    // Fetch the current Slack integration settings for the project from the API
-    // Update the state with the fetched data
-  }, []);
+    if (!session) {
+      router.push('/login');
+    }
+  }, [session]);
 
   const handleSlackAuth = () => {
-    // Handle the Slack authentication process
-    // Open a new window with the Slack OAuth URL
-    // Listen for the `message` event to receive the `slackChannelId` after successful authentication
-    // Update the state with the received `slackChannelId`
+    // TODO: Implement Slack authentication logic here
+    // This is a placeholder and needs to be replaced with actual implementation
+    console.log('Slack authentication initiated');
+    // Redirect to Slack OAuth endpoint
+    window.location.href = `https://slack.com/oauth/v2/authorize?client_id=${process.env.SLACK_CLIENT_ID}&scope=incoming-webhook&redirect_uri=${process.env.SLACK_REDIRECT_URI}`;
   };
 
-  const handleSaveSettings = () => {
-    // Save the updated Slack integration settings to the API
-    // Make a POST request to the API with the updated settings
-    // Handle any errors that may occur
-  };
+  const handleSaveSettings = async () => {
+    // TODO: Implement save settings logic here
+    // This is a placeholder and needs to be replaced with actual implementation
+    console.log('Saving settings initiated');
+    // Save the Slack Channel ID to the project
+    const response = await fetch(`/api/projects/${project.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        slackChannelId,
+      }),
+    });
 
-  if (!session) {
-    return <p>Redirecting to login...</p>;
-  }
+    if (response.ok) {
+      alert('Settings saved successfully');
+    } else {
+      alert('Failed to save settings');
+    }
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">Slack Integration</h1>
-      <p className="text-gray-600 mb-6">Connect your project to Slack to receive updates and manage tasks directly from your Slack workspace.</p>
-      <button className="bg-blue-500 text-white px-4 py-2 rounded mb-6" onClick={handleSlackAuth}>Connect to Slack</button>
-      <form className="space-y-4" onSubmit={handleSaveSettings}>
-        <div className="flex items-center">
-          <label htmlFor="slackChannel" className="w-32 font-medium">Slack Channel:</label>
-          <input id="slackChannel" type="text" value={slackChannelId} onChange={(e) => setSlackChannelId(e.target.value)} className="border border-gray-300 px-2 py-1 rounded w-full" />
-        </div>
-        <button className="bg-green-500 text-white px-4 py-2 rounded" type="submit">Save Settings</button>
-      </form>
-    </div>
+    <Layout>
+      <div className="container mx-auto px-4">
+        <h1 className="text-3xl font-bold mb-4">Slack Integration</h1>
+        <p className="mb-4">
+          Connect your project to a Slack channel to receive updates and notifications.
+        </p>
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+          onClick={handleSlackAuth}
+        >
+          Connect to Slack
+        </button>
+        <form onSubmit={handleSaveSettings}>
+          <label htmlFor="slackChannelId" className="block mt-4">
+            Slack Channel ID
+          </label>
+          <input
+            id="slackChannelId"
+            type="text"
+            value={slackChannelId || ''}
+            onChange={(e) => setSlackChannelId(e.target.value)}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+          />
+          <button
+            type="submit"
+            className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
+          >
+            Save Settings
+          </button>
+        </form>
+      </div>
+    </Layout>
   );
-};
-
-export default SlackIntegration;
+}
