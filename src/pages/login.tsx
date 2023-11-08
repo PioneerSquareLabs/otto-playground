@@ -73,7 +73,7 @@ const LoginPage: React.FC = () => {
           </div>
           <button onClick={handleSignIn} className="w-full max-w-xl h-10 bg-red-500 rounded-md shadow-md text-white font-medium">Sign in</button>
           <button onClick={handleSignInWithGithub} className="w-full max-w-xl h-10 border border-gray-300 rounded-md shadow-md flex items-center justify-center space-x-2">
-            <FontAwesomeIcon icon={faGithub} />
+            <FontAwesomeIcon icon={faGithub} style={{ height: '20px', width: '20px' }} />
             <span className="text-base font-medium text-black">Sign in with GitHub</span>
           </button>
           <span className="text-sm font-medium text-center text-black cursor-pointer" onClick={handleSignUp}>Don’t have an account? Sign up for free!</span>
